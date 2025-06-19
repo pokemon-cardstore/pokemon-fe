@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1009468085590",
+    "firebase_url": "https://pokemon-chat-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pokemon-chat-app",
+    "storage_bucket": "pokemon-chat-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009468085590:android:4dc9b4c31972f7361a32f7",
+        "android_client_info": {
+          "package_name": "com.example.pokemonshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD75RR6f39C27UHVZK4atdo12vGyCNENGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- ScrollView cho phép cuộn dọc toàn bộ giao diện Dashboard.-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.admin.AdminDashboardActivity">
+
+    <!-- ConstraintLayout chứa toàn bộ nội dung của Admin Dashboard -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/constraintLayout"
+        android:layout_marginTop="20dp">
+
+        <!-- TextView hiển thị tên cửa hàng. -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:id="@+id/amazonName"
+            android:text="Pokemon"
+            android:textSize="36sp"
+            android:textColor="@color/lavender"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/montserrat_semi_bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/amazonImage"/>
+
+        <!-- TextView hiển thị mô tả cửa hàng -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/amazonDesc"
+            android:text="Pokemon shop"
+            android:textSize="14sp"
+            android:layout_marginStart="18dp"
+            android:textColor="@color/lavender"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amazonName"
+            app:layout_constraintEnd_toStartOf="@+id/amazonImage"/>
+
+        <!-- ImageView hiển thị logo của cửa hàng-->
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:id="@+id/amazonImage"
+            android:src="@drawable/pokemon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toEndOf="@id/amazonName"/>
+
+<!--         LinearLayout chứa hàng đầu tiên của các thẻ  -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="175dp"
+            android:id="@+id/row1"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amazonImage">
+
+<!--             CardView đại diện cho phần 'Danh mục' -->
+           <androidx.cardview.widget.CardView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:id="@+id/categoryCard"
+               android:layout_margin="10dp"
+               android:layout_weight="1"
+               app:cardElevation="20dp"
+               app:cardCornerRadius="20dp">
+
+<!--                RelativeLayout dùng để căn chỉnh nhãn 'Danh mục' và biểu tượng -->
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent">
+
+<!--                    TextView hiển thị nhãn 'Danh mục' -->
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/categoryDashboard"
+                       android:text="Danh mục"
+                       android:textSize="20sp"
+                       android:textColor="@color/lavender"
+                       android:fontFamily="@font/montserrat_semi_bold"
+                       android:layout_marginTop="10dp"
+                       android:layout_centerHorizontal="true"
+                       android:layout_below="@+id/categoryImageDashboard"/>
+
+                   <!-- ImageView hiển thị biểu tượng của 'Danh mục' -->
+                   <ImageView
+                       android:layout_width="70dp"
+                       android:layout_height="70dp"
+                       android:id="@+id/categoryImageDashboard"
+                       android:src="@drawable/categories"
+                       android:layout_marginTop="15dp"
+                       android:layout_centerHorizontal="true"/>
+
+               </RelativeLayout>
+           </androidx.cardview.widget.CardView>
+
+<!--             CardView đại diện cho phần 'Sản phẩm' -->
+           <androidx.cardview.widget.CardView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:id="@+id/productCard"
+               android:layout_margin="10dp"
+               android:layout_weight="1"
+               app:cardElevation="20dp"
+               app:cardCornerRadius="20dp">
+
+               <!-- TextView hiển thị nhãn 'Sản phẩm' -->
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/productDashboard"
+                       android:text="Sản phẩm"
+                       android:textSize="20sp"
+                       android:textColor="@color/lavender"
+                       android:fontFamily="@font/montserrat_semi_bold"
+                       android:layout_marginTop="10dp"
+                       android:layout_centerHorizontal="true"
+                       android:layout_below="@+id/productImageDashboard"/>
+
+                   <!-- ImageView hiển thị biểu tượng của 'Sản phẩm' -->
+                   <ImageView
+                       android:layout_width="70dp"
+                       android:layout_height="70dp"
+                       android:id="@+id/productImageDashboard"
+                       android:src="@drawable/pokeball"
+                       android:layout_marginTop="15dp"
+                       android:layout_centerHorizontal="true"/>
+
+               </RelativeLayout>
+           </androidx.cardview.widget.CardView>
+       </LinearLayout>
+
+        <!-- LinearLayout chứa hàng thứ hai của các thẻ -->
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="175dp"
+          android:id="@+id/row2"
+          android:orientation="horizontal"
+          android:layout_marginTop="10dp"
+          android:padding="10dp"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/row1">
+
+          <!-- CardView đại diện cho phần 'Đơn hàng' -->
+          <androidx.cardview.widget.CardView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:id="@+id/orderCard"
+              android:layout_margin="10dp"
+              android:layout_weight="1"
+              app:cardElevation="20dp"
+              app:cardCornerRadius="20dp">
+
+              <RelativeLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+                  <!-- TextView hiển thị nhãn 'Đơn hàng' -->
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/orderDashboard"
+                      android:text="Đơn hàng"
+                      android:textSize="20sp"
+                      android:textColor="@color/lavender"
+                      android:fontFamily="@font/montserrat_semi_bold"
+                      android:layout_marginTop="10dp"
+                      android:layout_centerHorizontal="true"
+                      android:layout_below="@+id/orderImageDashboard"/>
+
+                  <!-- ImageView hiển thị biểu tượng của 'Đơn hàng' -->
+                  <ImageView
+                      android:layout_width="70dp"
+                      android:layout_height="70dp"
+                      android:id="@+id/orderImageDashboard"
+                      android:src="@drawable/order"
+                      android:layout_marginTop="15dp"
+                      android:layout_centerHorizontal="true"/>
+
+              </RelativeLayout>
+          </androidx.cardview.widget.CardView>
+
+          <!-- CardView đại diện cho phần 'Tin nhắn' -->
+          <androidx.cardview.widget.CardView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:id="@+id/chatboxCard"
+              android:layout_margin="10dp"
+              android:layout_weight="1"
+              app:cardElevation="20dp"
+              app:cardCornerRadius="20dp">
+
+              <RelativeLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+                  <!-- TextView hiển thị nhãn 'Tin nhắn' -->
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/chatboxDashboard"
+                      android:text="Tin nhắn"
+                      android:textSize="20sp"
+                      android:textColor="@color/lavender"
+                      android:fontFamily="@font/montserrat_semi_bold"
+                      android:layout_marginTop="10dp"
+                      android:layout_centerHorizontal="true"
+                      android:layout_below="@+id/chatboxImageDashboard"/>
+
+                  <!-- ImageView hiển thị biểu tượng của 'Tin nhắn' -->
+                  <ImageView
+                      android:layout_width="70dp"
+                      android:layout_height="70dp"
+                      android:id="@+id/chatboxImageDashboard"
+                      android:src="@drawable/message"
+                      android:layout_marginTop="15dp"
+                      android:layout_centerHorizontal="true"/>
+
+              </RelativeLayout>
+          </androidx.cardview.widget.CardView>
+      </LinearLayout>
+
+        <!-- LinearLayout chứa hàng thứ ba của các thẻ -->
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="175dp"
+          android:id="@+id/row3"
+          android:orientation="horizontal"
+          android:layout_marginTop="10dp"
+          android:padding="10dp"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/row2">
+
+          <!-- CardView đại diện cho phần 'Đăng xuất'-->
+         <androidx.cardview.widget.CardView
+             android:layout_width="0dp"
+             android:layout_height="match_parent"
+             android:id="@+id/logoutCard"
+             android:layout_margin="10dp"
+             android:layout_weight="1"
+             app:cardElevation="20dp"
+             app:cardCornerRadius="20dp">
+
+             <RelativeLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+                 <!-- TextView hiển thị nhãn 'Đăng xuất' -->
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:id="@+id/logoutDashboard"
+                     android:text="Đăng xuất"
+                     android:textSize="20sp"
+                     android:textColor="@color/lavender"
+                     android:fontFamily="@font/montserrat_semi_bold"
+                     android:layout_marginTop="10dp"
+                     android:layout_centerHorizontal="true"
+                     android:layout_below="@+id/logoutImageDashboard"/>
+
+                 <!-- ImageView hiển thị biểu tượng của 'Đăng xuất' -->
+                 <ImageView
+                     android:layout_width="70dp"
+                     android:layout_height="70dp"
+                     android:id="@+id/logoutImageDashboard"
+                     android:src="@drawable/logout"
+                     android:layout_marginTop="15dp"
+                     android:layout_centerHorizontal="true"/>
+
+             </RelativeLayout>
+         </androidx.cardview.widget.CardView>
+     </LinearLayout>
+
+ </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

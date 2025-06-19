@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/pokemon"
+        android:label="Pokemon shop"
+        android:roundIcon="@drawable/pokemon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PokemonShop"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".activity.admin.AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AdminChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.ChatCustomerListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.CategoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AddCategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.ProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AddProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.auth.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.customer.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.auth.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.customer.OrderCustomerDetailActivity"
+            android:exported="false">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.customer.PaymentFailedActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-failed"
+                    android:scheme="pokemonshop" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.customer.PaymentSuccessActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-success"
+                    android:scheme="pokemonshop" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.customer.MainActivity"
+            android:exported="false">
+        </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAENjulGO-I7mXfI_AloB7vki3GPTgAlMw" />
+    </application>
+
+</manifest>
