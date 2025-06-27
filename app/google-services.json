@@ -1,27 +1,44 @@
 {
   "project_info": {
-    "project_number": "1009468085590",
-    "firebase_url": "https://pokemon-chat-app-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "pokemon-chat-app",
-    "storage_bucket": "pokemon-chat-app.firebasestorage.app"
+    "project_number": "947958783260",
+    "project_id": "pokemonauth-1fc12",
+    "storage_bucket": "pokemonauth-1fc12.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1009468085590:android:4dc9b4c31972f7361a32f7",
+        "mobilesdk_app_id": "1:947958783260:android:52a927590f5806b358aed9",
         "android_client_info": {
           "package_name": "com.example.pokemonshop"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "947958783260-81rhfrdovhbldj13a1d7ete9pigp9lv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pokemonshop",
+            "certificate_hash": "f6a6c6bc29c45956cdf2e953a54584a13afbe00c"
+          }
+        },
+        {
+          "client_id": "947958783260-256t1iq5n2sj23hk4rudg7q19dh9dlkk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyD75RR6f39C27UHVZK4atdo12vGyCNENGE"
+          "current_key": "AIzaSyDkpBjvarxx_tt8z3oRtlOICi5qKiR4OuU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947958783260-256t1iq5n2sj23hk4rudg7q19dh9dlkk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
