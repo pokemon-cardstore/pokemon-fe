@@ -191,5 +191,5 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
+    }//check
 }
