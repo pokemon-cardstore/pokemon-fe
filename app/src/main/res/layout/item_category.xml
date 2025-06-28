@@ -2,19 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
+    android:orientation="horizontal"
+    android:padding="16dp"
     android:background="@drawable/rounded_recyclerview_background"
     android:gravity="center"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp">
-
-    <ImageView
-        android:id="@+id/category_image"
-        android:layout_width="75dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pokemon" />
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="2dp">
 
     <TextView
         android:id="@+id/category_name"
@@ -23,10 +19,13 @@
         android:text="Category"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:layout_marginTop="8dp"
         android:textStyle="bold"
-        android:maxLines="2"
+        android:maxLines="1"
         android:ellipsize="end"
         android:gravity="center"
-        android:width="100dp"/>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:minWidth="80dp"/>
 </LinearLayout>
