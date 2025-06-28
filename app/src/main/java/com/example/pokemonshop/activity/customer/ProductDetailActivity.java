@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.DecimalFormat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -73,17 +74,23 @@ public class ProductDetailActivity extends AppCompatActivity {
             // Hiển thị thông tin sản phẩm trên các TextView
             productNameTextView.setText(product.getName());
             productDescriptionTextView.setText(product.getDescription());
-            productPriceTextView.setText(String.format("%.2f VND", product.getPrice()));
+            
+            // Format price with Vietnamese currency format
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            String formattedPrice = formatter.format(product.getPrice()) + " ₫";
+            productPriceTextView.setText(formattedPrice);
+            
             productStatusTextView.setText(product.getQuantity() > 0 ? "Sản phẩm còn hàng" : "Sản phẩm đã hết hàng");
             productStatusTextView.setTextColor(getResources().getColor(product.getQuantity() > 0 ? R.color.green : R.color.red));
 
             // Hiển thị hình ảnh sản phẩm bằng Glide
             if (product.getImages() != null && !product.getImages().isEmpty()) {
-                String base64Image = product.getImages().get(0).getBase64StringImage();
-                if (base64Image != null && !base64Image.isEmpty()) {
-                    byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
+                String imageUrl = product.getImages().get(0).getBase64StringImage();
+                if (imageUrl != null && !imageUrl.isEmpty()) {
                     Glide.with(this)
-                            .load(imageBytes) // Load hình ảnh từ byte array
+                            .load(imageUrl) // Load hình ảnh từ URL
+                            .placeholder(R.drawable.pikachu) // Placeholder while loading
+                            .error(R.drawable.pikachu) // Fallback image if loading fails
                             .into(productImageView); // Gán hình ảnh vào ImageView
                 } else {
                     productImageView.setImageResource(R.drawable.pikachu); // Hình ảnh mặc định
