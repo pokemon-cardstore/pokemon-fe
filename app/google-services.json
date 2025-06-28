@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "947958783260-vhrfcabko151hm3lghhfdus3f0chkr9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pokemonshop",
+            "certificate_hash": "67763e9e71bb26c8a8193b05c1df31d6edf8227b"
+          }
+        },
+        {
           "client_id": "947958783260-256t1iq5n2sj23hk4rudg7q19dh9dlkk.apps.googleusercontent.com",
           "client_type": 3
         }
