@@ -19,6 +19,8 @@ import com.example.pokemonshop.activity.customer.ProductDetailActivity;
 import com.example.pokemonshop.model.Product; // Model dữ liệu sản phẩm
 
 import java.util.List;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 // Adapter cho RecyclerView để hiển thị danh sách sản phẩm
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ViewHolder> {
@@ -48,8 +50,24 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
         // Set tên và giá cho TextView
         holder.textViewName.setText(product.getName());
-        holder.textViewPrice.setText(String.format("%.2f VND", product.getPrice()));
-        holder.imageView.setImageResource(R.drawable.pikachu);
+        
+        // Format price with Vietnamese currency format
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        String formattedPrice = formatter.format(product.getPrice()) + " ₫";
+        holder.textViewPrice.setText(formattedPrice);
+        
+        // Load image from API using Glide
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            String imageUrl = product.getImages().get(0).getBase64StringImage();
+            Glide.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.pikachu) // Placeholder while loading
+                .error(R.drawable.pikachu) // Fallback image if loading fails
+                .into(holder.imageView);
+        } else {
+            // Use default image if no images available
+            holder.imageView.setImageResource(R.drawable.pikachu);
+        }
 
         // Đặt sự kiện click cho từng item trong RecyclerView
         holder.itemView.setOnClickListener(v -> {

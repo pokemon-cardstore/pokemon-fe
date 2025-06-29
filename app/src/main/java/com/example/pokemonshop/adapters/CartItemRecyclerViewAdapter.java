@@ -34,6 +34,7 @@ import retrofit2.Response;
 
 public class CartItemRecyclerViewAdapter extends RecyclerView.Adapter<CartItemRecyclerViewAdapter.ViewHolder> {
     private List<CartItem> items; // Danh sách các mặt hàng trong giỏ hàng
+    //cmt ne
     private Context context; // Context của ứng dụng
     private ProductService productService; // Service để lấy thông tin sản phẩm
     private CartItemService cartItemService; // Service để thao tác với giỏ hàng

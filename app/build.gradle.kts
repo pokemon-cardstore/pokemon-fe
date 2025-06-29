@@ -60,6 +60,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.firebase:firebase-auth")
     implementation ("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.airbnb.android:lottie:6.4.0")
 
 
 }

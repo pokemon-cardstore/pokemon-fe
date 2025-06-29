@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,12 +45,6 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         Category category = categories.get(position);
         holder.textViewName.setText(category.getName());
 
-        // Set the image resource if it is static or load from URL if dynamic
-        holder.imageView.setImageResource(R.drawable.pikachu); // Use static image
-
-        // If your images are loaded from URLs, use a library like Glide or Picasso
-        // Glide.with(context).load(category.getImageUrl()).into(holder.imageView);
-
         holder.itemView.setOnClickListener(v -> {
             if (onCategoryClickListener != null) {
                 onCategoryClickListener.onCategoryClick(category);
@@ -66,12 +59,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewName;
-        public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.category_name);
-            imageView = itemView.findViewById(R.id.category_image);
         }
     }
 }
