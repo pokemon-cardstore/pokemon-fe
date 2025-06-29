@@ -2,6 +2,9 @@ package com.example.pokemonshop.activity.customer;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.os.Handler;
+import com.airbnb.lottie.LottieAnimationView;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -27,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_base);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        LottieAnimationView lottie = findViewById(R.id.lottieLoading);
+        lottie.setVisibility(View.VISIBLE);
+        lottie.playAnimation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                lottie.cancelAnimation();
+                lottie.setVisibility(View.GONE);
+            }
+        }, 4000);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
