@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new LocationFragment();
                 } else if (itemId == R.id.navigation_chat) {
                     selectedFragment = new ChatFragment();
+                } else if (itemId == R.id.navigation_cart) {
+                    selectedFragment = new com.example.pokemonshop.activity.customer.fragments.CartFragment();
                 }
 
                 if (selectedFragment != null) {
