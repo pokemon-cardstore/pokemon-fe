@@ -53,41 +53,10 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Header Image -->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/header_image_logo"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_height="36dp"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:src="@drawable/pokemon"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/header_section" />-->
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/header_image_logo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_fileName="loading.json"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_section" />
-
-        <TextView
-            android:id="@+id/welcome_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chào mừng đến Pokemon Shop"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <!-- Welcome Section -->
+        <LinearLayout
+            android:id="@+id/welcome_section"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
@@ -100,14 +69,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_section">
 
-            <ImageView
-                android:id="@+id/header_image_logo"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/pikachu_logo"
-                android:background="@drawable/rounded_image"
-                android:clipToOutline="true" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/welcome_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_fileName="loading.json" />
 
             <TextView
                 android:id="@+id/welcome_text"
