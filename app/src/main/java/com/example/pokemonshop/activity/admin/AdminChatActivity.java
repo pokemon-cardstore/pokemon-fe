@@ -144,13 +144,31 @@ public class AdminChatActivity extends AppCompatActivity {
         request.setCustomerId(customerId);
         request.setContent(content);
         request.setType("ADMIN");
-        request.setSendTime(LocalDateTime.now().toString()); // Set the send time here
+        request.setSendTime(java.time.LocalDateTime.now().toString()); // Set the send time here
 
+        // Gửi lên Firebase
         chatRef.child("messages").child(messageId).setValue(request)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("ChatFragment", "Gửi tin nhắn thành công");
                 })
                 .addOnFailureListener(e -> Log.e("ChatFragment", "Gửi tin nhắn thất bại", e));
+
+        // Gửi lên backend để lưu lịch sử
+        MessageRepository.sendMessageAdmin(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("AdminChatActivity", "Gửi tin nhắn lên backend thành công");
+                } else {
+                    Log.e("AdminChatActivity", "Gửi tin nhắn lên backend thất bại: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("AdminChatActivity", "Gửi tin nhắn lên backend thất bại", t);
+            }
+        });
     }
 }
 

@@ -159,10 +159,28 @@ public class ChatFragment extends Fragment {
         request.setSendTime(java.time.LocalDateTime.now().toString());
         request.setType("CUSTOMER");
 
+        // Gửi lên Firebase
         chatRef.child("messages").child(messageId).setValue(request)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("ChatFragment", "Gửi tin nhắn thành công");
                 })
                 .addOnFailureListener(e -> Log.e("ChatFragment", "Gửi tin nhắn thất bại", e));
+
+        // Gửi lên backend để lưu lịch sử
+        MessageRepository.sendMessage(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("ChatFragment", "Gửi tin nhắn lên backend thành công");
+                } else {
+                    Log.e("ChatFragment", "Gửi tin nhắn lên backend thất bại: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("ChatFragment", "Gửi tin nhắn lên backend thất bại", t);
+            }
+        });
     }
 }
