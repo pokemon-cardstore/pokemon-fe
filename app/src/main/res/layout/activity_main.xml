@@ -199,6 +199,23 @@
 
         </LinearLayout>
 
+        <!-- Empty Products Message -->
+        <TextView
+            android:id="@+id/empty_products_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Không có sản phẩm nào"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="32dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/featured_header" />
+
         <!-- Product List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/featured_list"
@@ -208,7 +225,7 @@
             android:layout_marginTop="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/featured_header"
+            app:layout_constraintTop_toBottomOf="@id/empty_products_message"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_product" />
 

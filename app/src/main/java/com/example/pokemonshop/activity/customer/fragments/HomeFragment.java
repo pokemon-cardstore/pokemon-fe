@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -25,6 +26,7 @@ import com.example.pokemonshop.api.Product.ProductService;
 import com.example.pokemonshop.model.Category;
 import com.example.pokemonshop.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,6 +42,7 @@ public class HomeFragment extends Fragment {
     private ProductRecyclerViewAdapter productAdapter;
     private SearchView searchView;
     private ImageView searchIcon;
+    private TextView emptyProductsMessage;
 
     @Nullable
     @Override
@@ -52,6 +55,7 @@ public class HomeFragment extends Fragment {
         productRecyclerView = view.findViewById(R.id.featured_list);
         searchView = view.findViewById(R.id.search_view);
         searchIcon = view.findViewById(R.id.ic_search);
+        emptyProductsMessage = view.findViewById(R.id.empty_products_message);
 
         // Thiết lập LinearLayoutManager theo chiều ngang cho RecyclerView hiển thị danh mục
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -88,12 +92,27 @@ public class HomeFragment extends Fragment {
                 // Nếu phản hồi thành công và có dữ liệu
                 if (response.isSuccessful() && response.body() != null) {
                     List<Category> categories = response.body();
+                    
+                    // Thêm category "All" vào đầu danh sách
+                    List<Category> categoriesWithAll = new ArrayList<>();
+                    Category allCategory = new Category(-1, "Tất cả", "Hiển thị tất cả sản phẩm", 1);
+                    categoriesWithAll.add(allCategory);
+                    categoriesWithAll.addAll(categories);
+                    
                     // Tạo adapter và gán cho RecyclerView hiển thị danh mục
-                    categoryAdapter = new CategoryRecyclerViewAdapter(categories, getContext());
+                    categoryAdapter = new CategoryRecyclerViewAdapter(categoriesWithAll, getContext());
                     categoryRecyclerView.setAdapter(categoryAdapter);
 
                     // Đặt sự kiện click cho danh mục để tải sản phẩm theo danh mục
-                    categoryAdapter.setOnCategoryClickListener(category -> loadProductsByCategory(category.getCategoryId()));
+                    categoryAdapter.setOnCategoryClickListener(category -> {
+                        if (category.getCategoryId() == -1) {
+                            // Nếu click vào "All", tải tất cả sản phẩm
+                            loadAllProducts();
+                        } else {
+                            // Tải sản phẩm theo danh mục
+                            loadProductsByCategory(category.getCategoryId());
+                        }
+                    });
                 } else {
                     // Hiển thị thông báo nếu không thể tải danh mục
                     Toast.makeText(getContext(), "Không thể tải danh mục", Toast.LENGTH_SHORT).show();
@@ -121,9 +140,16 @@ public class HomeFragment extends Fragment {
                 // Kiểm tra nếu phản hồi thành công và có dữ liệu trả về
                 if (response.isSuccessful() && response.body() != null) {
                     List<Product> products = response.body();
-                    // Tạo adapter cho danh sách sản phẩm và gán cho RecyclerView
-                    productAdapter = new ProductRecyclerViewAdapter(products, getContext());
-                    productRecyclerView.setAdapter(productAdapter);
+                    if (products.isEmpty()) {
+                        // Hiển thị thông báo không có sản phẩm
+                        showEmptyProductsMessage();
+                    } else {
+                        // Ẩn thông báo và hiển thị sản phẩm
+                        hideEmptyProductsMessage();
+                        // Tạo adapter cho danh sách sản phẩm và gán cho RecyclerView
+                        productAdapter = new ProductRecyclerViewAdapter(products, getContext());
+                        productRecyclerView.setAdapter(productAdapter);
+                    }
                 } else {
                     // Hiển thị thông báo lỗi nếu không thể tải sản phẩm
                     Toast.makeText(getContext(), "Không thể tải sản phẩm", Toast.LENGTH_SHORT).show();
@@ -150,17 +176,19 @@ public class HomeFragment extends Fragment {
                 // Kiểm tra nếu phản hồi thành công và có dữ liệu trả về
                 if (response.isSuccessful() && response.body() != null) {
                     List<Product> products = response.body();
-                    // Kiểm tra nếu không có sản phẩm trong danh mục, tải tất cả sản phẩm
+                    // Kiểm tra nếu không có sản phẩm trong danh mục
                     if (products.isEmpty()) {
-                        loadAllProducts(); // Gọi phương thức để tải tất cả sản phẩm
+                        showEmptyProductsMessage();
                     } else {
+                        // Ẩn thông báo và hiển thị sản phẩm
+                        hideEmptyProductsMessage();
                         // Tạo adapter cho sản phẩm theo danh mục và gán cho RecyclerView
                         productAdapter = new ProductRecyclerViewAdapter(products, getContext());
                         productRecyclerView.setAdapter(productAdapter);
                     }
                 } else {
-                    // Nếu không thể tải sản phẩm theo danh mục, tải tất cả sản phẩm
-                    loadAllProducts();
+                    // Nếu không thể tải sản phẩm theo danh mục, hiển thị thông báo
+                    showEmptyProductsMessage();
                 }
             }
 
@@ -184,12 +212,19 @@ public class HomeFragment extends Fragment {
                 // Kiểm tra nếu phản hồi thành công và có dữ liệu trả về
                 if (response.isSuccessful() && response.body() != null) {
                     List<Product> products = response.body();
-                    // Tạo adapter cho sản phẩm tìm kiếm và gán cho RecyclerView
-                    productAdapter = new ProductRecyclerViewAdapter(products, getContext());
-                    productRecyclerView.setAdapter(productAdapter);
+                    if (products.isEmpty()) {
+                        // Hiển thị thông báo không tìm thấy sản phẩm
+                        showEmptyProductsMessage();
+                    } else {
+                        // Ẩn thông báo và hiển thị sản phẩm
+                        hideEmptyProductsMessage();
+                        // Tạo adapter cho sản phẩm tìm kiếm và gán cho RecyclerView
+                        productAdapter = new ProductRecyclerViewAdapter(products, getContext());
+                        productRecyclerView.setAdapter(productAdapter);
+                    }
                 } else {
                     // Hiển thị thông báo nếu không tìm thấy sản phẩm
-                    Toast.makeText(getContext(), "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
+                    showEmptyProductsMessage();
                 }
             }
 
@@ -201,4 +236,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void showEmptyProductsMessage() {
+        if (emptyProductsMessage != null) {
+            emptyProductsMessage.setVisibility(View.VISIBLE);
+            productRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideEmptyProductsMessage() {
+        if (emptyProductsMessage != null) {
+            emptyProductsMessage.setVisibility(View.GONE);
+            productRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 }

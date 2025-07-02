@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pokemonshop.R;
@@ -19,6 +20,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     private List<Category> categories;
     private Context context;
     private OnCategoryClickListener onCategoryClickListener;
+    private int selectedPosition = 0; // Default to first item (All)
 
     public CategoryRecyclerViewAdapter(List<Category> categories, Context context) {
         this.categories = categories;
@@ -45,7 +47,26 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         Category category = categories.get(position);
         holder.textViewName.setText(category.getName());
 
+        // Set visual feedback for selected category
+        if (position == selectedPosition) {
+            // Selected category styling
+            holder.textViewName.setTextColor(ContextCompat.getColor(context, android.R.color.white));
+            holder.itemView.setBackgroundResource(R.drawable.rounded_button_background);
+        } else {
+            // Unselected category styling
+            holder.textViewName.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.itemView.setBackgroundResource(R.drawable.rounded_recyclerview_background);
+        }
+
         holder.itemView.setOnClickListener(v -> {
+            // Update selected position
+            int previousPosition = selectedPosition;
+            selectedPosition = position;
+            
+            // Notify adapter to update visual feedback
+            notifyItemChanged(previousPosition);
+            notifyItemChanged(selectedPosition);
+            
             if (onCategoryClickListener != null) {
                 onCategoryClickListener.onCategoryClick(category);
             }
