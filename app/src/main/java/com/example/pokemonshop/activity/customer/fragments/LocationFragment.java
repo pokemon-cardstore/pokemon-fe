@@ -1,45 +1,64 @@
 package com.example.pokemonshop.activity.customer.fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.pokemonshop.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class LocationFragment extends Fragment implements OnMapReadyCallback {
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
-    private GoogleMap gMap;
-    private int customerId;
+public class LocationFragment extends Fragment {
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private MapView mapView;
+    private android.location.LocationManager locationManager;
+    private Marker userMarker;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_location, container, false);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
+        Context ctx = getActivity().getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setUserAgentValue(ctx.getPackageName());
+
+        mapView = view.findViewById(R.id.map);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setMultiTouchControls(true);
+
+        // Vị trí cố định: 10.8411329, 106.8073081
+        double lat = 10.8411329;
+        double lon = 106.8073081;
+        GeoPoint fixedPoint = new GeoPoint(lat, lon);
+        mapView.getController().setZoom(17.0);
+        mapView.getController().setCenter(fixedPoint);
+
+        Marker marker = new Marker(mapView);
+        marker.setPosition(fixedPoint);
+        marker.setTitle("Pokemon Shop");
+        mapView.getOverlays().add(marker);
 
         Spinner mapTypeSpinner = view.findViewById(R.id.mapTypeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -50,22 +69,22 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         mapTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (gMap != null) {
+                if (mapView != null) {
                     switch (position) {
                         case 0:
-                            gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                            mapView.setTileSource(TileSourceFactory.MAPNIK);
                             break;
                         case 1:
-                            gMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                            mapView.setTileSource(TileSourceFactory.USGS_SAT);
                             break;
                         case 2:
-                            gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                            mapView.setTileSource(TileSourceFactory.MAPNIK);
                             break;
                         case 3:
-                            gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                            mapView.setTileSource(TileSourceFactory.USGS_TOPO);
                             break;
                         default:
-                            gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                            mapView.setTileSource(TileSourceFactory.MAPNIK);
                             break;
                     }
                 }
@@ -80,28 +99,55 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        this.gMap = googleMap;
-
-        LatLng storeLocation = new LatLng(10.875161439006936, 106.8007237477931); // Example coordinates (Ho Chi Minh City, Vietnam)
-        this.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(storeLocation, 15));
-
-        BitmapDescriptor customMarker = getCustomMarkerIcon(R.drawable.custom_store_logo, 100, 100); // 100x100 pixels
-
-        MarkerOptions options = new MarkerOptions()
-                .position(storeLocation)
-                .title("Your Store")
-                .icon(customMarker);
-        this.gMap.addMarker(options);
-
-        gMap.getUiSettings().setZoomControlsEnabled(true);
-        gMap.getUiSettings().setCompassEnabled(true);
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getContext(), "Chưa có quyền truy cập vị trí", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+        locationManager.requestLocationUpdates(android.location.LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
     }
 
-    private BitmapDescriptor getCustomMarkerIcon(int resourceId, int width, int height) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        return BitmapDescriptorFactory.fromBitmap(scaledBitmap);
+    private final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            showLocationOnMap(location);
+        }
+        @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
+        @Override public void onProviderEnabled(String provider) {}
+        @Override public void onProviderDisabled(String provider) {}
+    };
+
+    private void showLocationOnMap(Location location) {
+        GeoPoint userPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+        mapView.getController().setZoom(17.0);
+        mapView.getController().setCenter(userPoint);
+        if (userMarker == null) {
+            userMarker = new Marker(mapView);
+            userMarker.setTitle("Vị trí của bạn");
+            mapView.getOverlays().add(userMarker);
+        }
+        userMarker.setPosition(userPoint);
+        mapView.invalidate();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdates();
+            } else {
+                Toast.makeText(getContext(), "Bạn cần cấp quyền vị trí để xem bản đồ!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 }
