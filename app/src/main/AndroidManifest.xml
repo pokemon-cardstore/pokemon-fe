@@ -53,6 +53,9 @@
         <activity
             android:name=".activity.customer.ProductDetailActivity"
             android:exported="false" />
+
+        <activity android:name=".activity.auth.ActivateWebViewActivity"/>
+
         <activity
             android:name=".activity.auth.LoginActivity"
             android:exported="true">
@@ -64,10 +67,10 @@
         <activity
             android:name=".activity.customer.OrderCustomerDetailActivity"
             android:exported="false">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".activity.customer.PaymentFailedActivity"
