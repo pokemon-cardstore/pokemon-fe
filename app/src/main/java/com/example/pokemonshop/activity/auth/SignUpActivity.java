@@ -1,8 +1,10 @@
 package com.example.pokemonshop.activity.auth;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +21,8 @@ import com.example.pokemonshop.R;
 import com.example.pokemonshop.api.auth.AuthRepository;
 import com.example.pokemonshop.api.auth.AuthService;
 import com.example.pokemonshop.model.Customer;
+import com.example.pokemonshop.model.RegisterDto;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,23 +72,36 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void signup(String email, String password) {
-        if (!checkInput()) {
-            return;
-        }
+        if (!checkInput()) return;
+
         AuthService authService = AuthRepository.getAuthService();
-        Customer customer = new Customer(email, password);
-        Call<Void> call = authService.register(customer);
+
+        String confirmPassword = edtCP.getText().toString();
+        String username = email.split("@")[0];
+
+        RegisterDto dto = new RegisterDto(username, email, password, confirmPassword);
+
+        // 💥 Log JSON gửi đi
+        Log.d("DTO_JSON", new Gson().toJson(dto));
+
+        Call<Void> call = authService.register(dto);
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(SignUpActivity.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+                    new AlertDialog.Builder(SignUpActivity.this)
+                            .setTitle("Đăng ký thành công")
+                            .setMessage("🎉 Vui lòng kiểm tra email để kích hoạt tài khoản trước khi đăng nhập.")
+                            .setPositiveButton("Đăng nhập", (dialog, which) -> {
+                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            })
+                            .setCancelable(false)
+                            .show();
                 } else {
-                    Toast.makeText(SignUpActivity.this, "Đăng kí thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Đăng ký thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -95,23 +112,45 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+
+
     private boolean checkInput() {
-        if (TextUtils.isEmpty(edtU.getText().toString())) {
-            edtU.setError(REQUIRE);
+        String email = edtU.getText().toString().trim();
+        String password = edtP.getText().toString().trim();
+        String confirmPassword = edtCP.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)) {
+            edtU.setError("Email không được để trống");
             return false;
         }
-        if (TextUtils.isEmpty(edtP.getText().toString())) {
-            edtP.setError(REQUIRE);
+
+        if (!email.endsWith("@gmail.com") && !email.endsWith("@fpt.edu.vn")) {
+            edtU.setError("Email phải có đuôi @gmail.com hoặc @fpt.edu.vn");
             return false;
         }
-        if (TextUtils.isEmpty(edtCP.getText().toString())) {
-            edtCP.setError(REQUIRE);
+
+        if (TextUtils.isEmpty(password)) {
+            edtP.setError("Mật khẩu không được để trống");
             return false;
         }
-        if (!TextUtils.equals(edtP.getText().toString(), edtCP.getText().toString())) {
+
+        if (password.length() < 6) {
+            edtP.setError("Mật khẩu phải có ít nhất 6 ký tự");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword)) {
+            edtCP.setError("Xác nhận mật khẩu không được để trống");
+            return false;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            edtCP.setError("Mật khẩu xác nhận không khớp");
             Toast.makeText(this, "Mật khẩu không trùng nhau", Toast.LENGTH_LONG).show();
             return false;
         }
+
         return true;
     }
+
 }
