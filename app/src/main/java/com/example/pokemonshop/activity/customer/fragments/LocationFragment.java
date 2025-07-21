@@ -1,12 +1,9 @@
 package com.example.pokemonshop.activity.customer.fragments;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.pokemonshop.R;
@@ -28,12 +23,24 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocationFragment extends Fragment {
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
     private MapView mapView;
-    private android.location.LocationManager locationManager;
     private Marker userMarker;
+    private Marker shopMarker;
+    private Polyline routePolyline;
+    
+    // Vị trí cửa hàng cố định
+    private static final double SHOP_LAT = 10.8411329;
+    private static final double SHOP_LON = 106.8073081;
+    
+    // Vị trí giả định của customer (có thể thay đổi)
+    private static final double CUSTOMER_LAT = 10.8400;
+    private static final double CUSTOMER_LON = 106.8060;
 
     @Nullable
     @Override
@@ -48,17 +55,28 @@ public class LocationFragment extends Fragment {
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
 
-        // Vị trí cố định: 10.8411329, 106.8073081
-        double lat = 10.8411329;
-        double lon = 106.8073081;
-        GeoPoint fixedPoint = new GeoPoint(lat, lon);
+        // Vị trí cửa hàng
+        GeoPoint shopPoint = new GeoPoint(SHOP_LAT, SHOP_LON);
         mapView.getController().setZoom(17.0);
-        mapView.getController().setCenter(fixedPoint);
+        mapView.getController().setCenter(shopPoint);
 
-        Marker marker = new Marker(mapView);
-        marker.setPosition(fixedPoint);
-        marker.setTitle("Pokemon Shop");
-        mapView.getOverlays().add(marker);
+        // Marker cửa hàng
+        shopMarker = new Marker(mapView);
+        shopMarker.setPosition(shopPoint);
+        shopMarker.setTitle("Pokemon Shop");
+        mapView.getOverlays().add(shopMarker);
+
+        // Marker vị trí customer (giả định)
+        userMarker = new Marker(mapView);
+        userMarker.setPosition(new GeoPoint(CUSTOMER_LAT, CUSTOMER_LON));
+        userMarker.setTitle("Vị trí của bạn");
+        userMarker.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+        mapView.getOverlays().add(userMarker);
+
+        // Button vẽ đường - khai báo local để tránh lỗi
+        view.findViewById(R.id.btnShowRoute).setOnClickListener(v -> {
+            drawRouteToShop();
+        });
 
         Spinner mapTypeSpinner = view.findViewById(R.id.mapTypeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -99,55 +117,50 @@ public class LocationFragment extends Fragment {
         return view;
     }
 
-    private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Chưa có quyền truy cập vị trí", Toast.LENGTH_SHORT).show();
-            return;
+    private void drawRouteToShop() {
+        // Xóa đường cũ nếu có
+        if (routePolyline != null) {
+            mapView.getOverlays().remove(routePolyline);
         }
-        locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
-        locationManager.requestLocationUpdates(android.location.LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
-    }
 
-    private final LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            showLocationOnMap(location);
-        }
-        @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-        @Override public void onProviderEnabled(String provider) {}
-        @Override public void onProviderDisabled(String provider) {}
-    };
+        // Tạo đường thẳng từ vị trí customer đến cửa hàng
+        List<GeoPoint> routePoints = new ArrayList<>();
+        routePoints.add(userMarker.getPosition());
+        routePoints.add(shopMarker.getPosition());
 
-    private void showLocationOnMap(Location location) {
-        GeoPoint userPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-        mapView.getController().setZoom(17.0);
-        mapView.getController().setCenter(userPoint);
-        if (userMarker == null) {
-            userMarker = new Marker(mapView);
-            userMarker.setTitle("Vị trí của bạn");
-            mapView.getOverlays().add(userMarker);
-        }
-        userMarker.setPosition(userPoint);
+        routePolyline = new Polyline();
+        routePolyline.setPoints(routePoints);
+        routePolyline.setColor(android.graphics.Color.BLUE);
+        routePolyline.setWidth(5.0f);
+        routePolyline.setTitle("Đường đi đến cửa hàng");
+
+        mapView.getOverlays().add(routePolyline);
         mapView.invalidate();
+
+        Toast.makeText(getContext(), "Đã vẽ đường đến cửa hàng", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationUpdates();
-            } else {
-                Toast.makeText(getContext(), "Bạn cần cấp quyền vị trí để xem bản đồ!", Toast.LENGTH_SHORT).show();
-            }
+    public void onResume() {
+        super.onResume();
+        if (mapView != null) {
+            mapView.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapView != null) {
+            mapView.onPause();
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (locationManager != null && locationListener != null) {
-            locationManager.removeUpdates(locationListener);
+        if (mapView != null) {
+            mapView.onDetach();
         }
     }
 }
